@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* global css */
+body {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 18px;
+}
+
+/* custom properties */
+:root {
+    /* ## Colors */
+    /*  ### Primary */
+    --cl-Bright-Blue: hsl(220, 98%, 61%);
+    --gr-Check-Background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+}
+
+.light-theme {
+    /* --cl-Very Light Gray: hsl(0, 0%, 98%) 
+    --cl-Very Light Grayish Blue: hsl(236, 33%, 92%) 
+    --cl-Light Grayish Blue: hsl(233, 11%, 84%) 
+    --cl-Dark Grayish Blue: hsl(236, 9%, 61%) 
+    --cl-Very Dark Grayish Blue: hsl(235, 19%, 35%) */
+}
+
+.dark-theme {
+    /* --cl-Very Dark Blue: hsl(235, 21%, 11%) 
+    --cl-Very Dark Desaturated Blue: hsl(235, 24%, 19%) 
+    --cl-Light Grayish Blue: hsl(234, 39%, 85%) 
+    --cl-Light Grayish Blue (hover): hsl(236, 33%, 92%) 
+    --cl-Dark Grayish Blue: hsl(234, 11%, 52%) 
+    --cl-Very Dark Grayish Blue: hsl(233, 14%, 35%) 
+    --cl-Very Dark Grayish Blue: hsl(237, 14%, 26%) */
+}
