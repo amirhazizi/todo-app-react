@@ -17,6 +17,7 @@ body {
     --gr-Check-Background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 }
 
+/* theme classes */
 .light-theme {
     /* --cl-Very Light Gray: hsl(0, 0%, 98%) 
     --cl-Very Light Grayish Blue: hsl(236, 33%, 92%) 
@@ -33,4 +34,9 @@ body {
     --cl-Dark Grayish Blue: hsl(234, 11%, 52%) 
     --cl-Very Dark Grayish Blue: hsl(233, 14%, 35%) 
     --cl-Very Dark Grayish Blue: hsl(237, 14%, 26%) */
+}
+
+/* actual css */
+main>div {
+    width: min(85vw, 500px);
 }
