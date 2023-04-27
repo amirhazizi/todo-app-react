@@ -2,9 +2,19 @@ import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import { BsCheckLg, BsFillMoonFill, BsSunFill } from "react-icons/bs"
 import { RxCross2 } from "react-icons/rx"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 function App() {
   const [themeTrigger, setThemeTrigger] = useState(true)
+  useEffect(() => {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      setThemeTrigger(false)
+    } else {
+      setThemeTrigger(true)
+    }
+  }, [])
   return (
     <main
       className={`relative grid place-items-center min-h-screen ${
@@ -39,7 +49,7 @@ function App() {
           <div className='container rounded-lg'>
             <div className='todo relative py-4 w-full'>
               <div className='px-5 pl-16 flex justify-between items-center'>
-                <p className='cursor-pointer  pt-1'>todo 1</p>
+                <p className='cursor-pointer pt-1'>todo 1</p>
                 <button>
                   <RxCross2 className='scale-150 opacity-50' />
                 </button>
