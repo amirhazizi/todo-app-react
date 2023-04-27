@@ -1,9 +1,17 @@
 import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
-import { BsCheckLg, BsFillMoonFill, BsSunFill } from "react-icons/bs"
-import { RxCross2 } from "react-icons/rx"
+import { BsFillMoonFill, BsSunFill } from "react-icons/bs"
 import { useState, useEffect } from "react"
-function App() {
+import { ADD_TODO, REMOVE_TODO } from "./action"
+import { connect } from "react-redux"
+import SingleTodo from "./components/SingleTodo"
+type AppProps = {
+  todos: {}[]
+}
+type TodoAtr = {
+  id: number
+}
+function App({ todos }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   useEffect(() => {
     if (
@@ -47,17 +55,9 @@ function App() {
             <span className='absolute rounded-full top-1/2 left-6 -translate-y-1/2'></span>
           </form>
           <div className='container rounded-lg'>
-            <div className='todo relative py-4 w-full'>
-              <div className='px-5 pl-16 flex justify-between items-center'>
-                <p className='cursor-pointer pt-1'>todo 1</p>
-                <button>
-                  <RxCross2 className='scale-150 opacity-50' />
-                </button>
-              </div>
-              <span className='cursor-pointer absolute rounded-full top-1/2 left-6 -translate-y-1/2 todo-span'>
-                <BsCheckLg className='absolute w-2/3 h-2/3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fill-white' />
-              </span>
-            </div>
+            {todos.map((todo: any) => {
+              return <SingleTodo key={todo.id} {...todo} />
+            })}
             <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm'>
               <p className='total-btn'>2 items left</p>
               <button className='filter-btn'>Clear Completed</button>
@@ -77,4 +77,7 @@ function App() {
   )
 }
 
-export default App
+const mapStateToProps = (state: {}[], ownProps: {}) => {
+  return { todos: state, ...ownProps }
+}
+export default connect(mapStateToProps)(App)
