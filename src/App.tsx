@@ -1,18 +1,21 @@
 import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
-import { BsFillMoonFill, BsSunFill } from "react-icons/bs"
+import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
 import { ADD_TODO, REMOVE_TODO } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
 type AppProps = {
   todos: {}[]
+  addTodo: Function
 }
 type TodoAtr = {
   id: number
 }
-function App({ todos }: AppProps) {
+function App({ todos, addTodo }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
+  const [todoText, setTodoText] = useState("")
+
   useEffect(() => {
     if (
       window.matchMedia &&
@@ -23,6 +26,13 @@ function App({ todos }: AppProps) {
       setThemeTrigger(true)
     }
   }, [])
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (todoText) {
+      addTodo(todoText)
+      setTodoText("")
+    }
+  }
   return (
     <main
       className={`relative grid place-items-center min-h-screen ${
@@ -46,13 +56,28 @@ function App({ todos }: AppProps) {
           </button>
         </div>
         <div className='space-y-5'>
-          <form className='relative z-10'>
+          <form
+            onSubmit={handleSubmit}
+            className='relative z-10 overflow-hidden'
+          >
             <input
               type='text'
-              className='w-full py-5 pb-4 pl-16 rounded-lg  container focus:outline-none form-text'
+              value={todoText}
+              onChange={(e) => setTodoText(e.target.value)}
+              className='w-full py-5 pb-4  pl-16 rounded-lg  container focus:outline-none form-text'
               placeholder='Create a new Todo'
             />
             <span className='absolute rounded-full top-1/2 left-6 -translate-y-1/2'></span>
+            <button
+              type='submit'
+              className={`absolute right-0 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all ${
+                todoText.length > 0
+                  ? "-translate-x-10 opacity-100 "
+                  : "translate-x-5 opacity-0"
+              }`}
+            >
+              <BsCheckLg className='text-2xl fill-green-500' />
+            </button>
           </form>
           <div className='container rounded-lg'>
             {todos.map((todo: any) => {
@@ -77,7 +102,13 @@ function App({ todos }: AppProps) {
   )
 }
 
-const mapStateToProps = (state: {}[], ownProps: {}) => {
-  return { todos: state, ...ownProps }
+const mapStateToProps = (state: {}[]) => {
+  return { todos: state }
 }
-export default connect(mapStateToProps)(App)
+const mapDistpatchtoPrpos = (distpatch: Function, ownProps: { id: number }) => {
+  const { id } = ownProps
+  return {
+    addTodo: (text: string) => distpatch({ type: ADD_TODO, payload: text }),
+  }
+}
+export default connect(mapStateToProps, mapDistpatchtoPrpos)(App)

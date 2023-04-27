@@ -1,7 +1,14 @@
 import { BsCheckLg } from "react-icons/bs"
 import { RxCross2 } from "react-icons/rx"
-type SingleTodoProps = { id: number; content: string; type: string }
-const SingleTodo = ({ id, content, type }: SingleTodoProps) => {
+import { connect } from "react-redux"
+import { ADD_TODO, REMOVE_TODO } from "../action"
+type SingleTodoProps = {
+  id: number
+  content: string
+  type: string
+  addTodo: Function
+}
+const SingleTodo = ({ id, content, type, addTodo }: SingleTodoProps) => {
   return (
     <div className='todo relative py-4 w-full'>
       <div className='px-5 pl-16 flex justify-between items-center'>
@@ -16,5 +23,8 @@ const SingleTodo = ({ id, content, type }: SingleTodoProps) => {
     </div>
   )
 }
-
-export default SingleTodo
+const mapDistpatchtoPrpos = (distpatch: Function, ownProps: { id: number }) => {
+  const { id } = ownProps
+  return { addTodo: () => distpatch({ type: REMOVE_TODO, payload: id }) }
+}
+export default connect(null, mapDistpatchtoPrpos)(SingleTodo)
