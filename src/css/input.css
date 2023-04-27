@@ -14,29 +14,104 @@ body {
     /* ## Colors */
     /*  ### Primary */
     --cl-Bright-Blue: hsl(220, 98%, 61%);
-    --gr-Check-Background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+    --gr-Check-Background: linear-gradient(45deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 }
 
 /* theme classes */
 .light-theme {
-    /* --cl-Very Light Gray: hsl(0, 0%, 98%) 
-    --cl-Very Light Grayish Blue: hsl(236, 33%, 92%) 
-    --cl-Light Grayish Blue: hsl(233, 11%, 84%) 
-    --cl-Dark Grayish Blue: hsl(236, 9%, 61%) 
-    --cl-Very Dark Grayish Blue: hsl(235, 19%, 35%) */
+    --cl-BG: hsl(0, 0%, 98%);
+    --cl-Container-BG: hsl(0, 0%, 100%);
+    --cl-text: hsl(235, 19%, 35%);
+    --cl-text-2: hsl(236, 33%, 92%);
+    --cl-border: hsl(233, 11%, 84%);
+    --cl-dnd-text: hsl(236, 9%, 61%);
+    --cl-shadow: hsla(240, 9%, 61%, 0.365);
 }
 
 .dark-theme {
-    /* --cl-Very Dark Blue: hsl(235, 21%, 11%) 
-    --cl-Very Dark Desaturated Blue: hsl(235, 24%, 19%) 
-    --cl-Light Grayish Blue: hsl(234, 39%, 85%) 
-    --cl-Light Grayish Blue (hover): hsl(236, 33%, 92%) 
-    --cl-Dark Grayish Blue: hsl(234, 11%, 52%) 
-    --cl-Very Dark Grayish Blue: hsl(233, 14%, 35%) 
-    --cl-Very Dark Grayish Blue: hsl(237, 14%, 26%) */
+    --cl-BG: hsl(235, 21%, 11%);
+    --cl-Container-BG: hsl(235, 24%, 19%);
+    --cl-text: hsl(234, 39%, 85%);
+    /* --cl-Light-Grayish-Blue-2: hsl(236, 33%, 92%);
+    --cl-Dark-Grayish-Blue: hsl(234, 11%, 52%); */
+    --cl-border: hsl(233, 14%, 35%);
+    --cl-dnd-text: hsl(237, 14%, 26%);
+    --cl-shadow: hsla(0, 0%, 5%, 0.916);
 }
 
 /* actual css */
+main {
+    transition: all 250ms ease-in-out;
+    background: var(--cl-BG);
+}
+
 main>div {
     width: min(85vw, 500px);
+    background: var(--cl-Main-BG);
+}
+
+.container {
+    background: var(--cl-Container-BG);
+    color: var(--cl-text);
+    box-shadow: 0 5px 20px var(--cl-shadow);
+}
+
+
+.todo {
+    border-bottom: 1px solid var(--cl-border);
+    font-size: .95rem;
+}
+
+.form-text {
+    font-size: .95rem;
+
+}
+
+span {
+    border: 1px solid var(--cl-dnd-text);
+    height: 1.65rem;
+    width: 1.7rem;
+}
+
+.todo-span {
+    border: none;
+}
+
+.todo-span::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--cl-dnd-text);
+    border-radius: 50rem;
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+}
+
+.todo-span:hover::before {
+    background: linear-gradient(45deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%)) border-box;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    border-color: transparent;
+}
+
+
+.completed-span {
+    background: var(--gr-Check-Background);
+}
+
+
+.filter-btn,
+.total-btn {
+    opacity: .65;
+    color: var(--cl-text);
+    transition: all 250ms ease-in-out;
+}
+
+.filter-btn:hover {
+    opacity: 1;
+}
+
+.dnd {
+    color: var(--cl-dnd-text);
 }
