@@ -4,18 +4,34 @@ import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
-import { ADD_TODO, CLEAR_COMPLETED, FILTER_TODO } from "./action"
+import { ADD_TODO, CLEAR_COMPLETED, END_EDIT } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
+type InitialStatePrpos = {
+  todos: {}[]
+  isEdit: boolean
+  editID: number
+  editContent: string
+}
 type AppProps = {
   todos: {}[]
   addTodo: Function
   clearCompleted: Function
+  completeEdit: Function
+  editContent: string
+  isEdit: boolean
 }
 type TodoAtr = {
   id: number
 }
-function App({ todos, addTodo, clearCompleted }: AppProps) {
+function App({
+  todos,
+  isEdit,
+  editContent,
+  addTodo,
+  clearCompleted,
+  completeEdit,
+}: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
   const [totalActive, setTotalActive] = useState(0)
@@ -47,10 +63,17 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
       setTempTodos(todos)
     }
   }, [filterType])
+  useEffect(() => {
+    if (isEdit && editContent.length > 0) setTodoText(editContent)
+  }, [isEdit])
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (todoText) {
+    if (todoText && !isEdit) {
       addTodo(todoText)
+      setTodoText("")
+    }
+    if (todoText && isEdit) {
+      completeEdit(todoText)
       setTodoText("")
     }
   }
@@ -170,14 +193,15 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
   )
 }
 
-const mapStateToProps = (state: {}[]) => {
-  return { todos: state }
+const mapStateToProps = (state: InitialStatePrpos) => {
+  return { ...state }
 }
-const mapDistpatchtoPrpos = (distpatch: Function, ownProps: { id: number }) => {
-  const { id } = ownProps
+const mapDistpatchtoPrpos = (distpatch: Function) => {
   return {
     addTodo: (text: string) => distpatch({ type: ADD_TODO, payload: text }),
     clearCompleted: () => distpatch({ type: CLEAR_COMPLETED }),
+    completeEdit: (text: string) =>
+      distpatch({ type: END_EDIT, payload: text }),
   }
 }
 export default connect(mapStateToProps, mapDistpatchtoPrpos)(App)

@@ -1,7 +1,7 @@
 import { BsCheckLg } from "react-icons/bs"
-import { RxCross2 } from "react-icons/rx"
+import { RxCross2, RxPencil2 } from "react-icons/rx"
 import { connect } from "react-redux"
-import { REMOVE_TODO, IS_COMPLETED, IS_ACTIVE } from "../action"
+import { REMOVE_TODO, IS_COMPLETED, IS_ACTIVE, START_EDIT } from "../action"
 import { useState, useEffect } from "react"
 type SingleTodoProps = {
   id: number
@@ -10,14 +10,20 @@ type SingleTodoProps = {
   removeTodo: Function
   setActive: Function
   setCompleted: Function
+  startEdit: Function
+}
+type InitialStatePrpos = {
+  isEdit: boolean
+  editID: number
+  editContent: string
 }
 const SingleTodo = ({
-  id,
   content,
   type,
   removeTodo,
   setActive,
   setCompleted,
+  startEdit,
 }: SingleTodoProps) => {
   const [isCompleted, setIsCompleted] = useState(false)
   useEffect(() => {
@@ -41,12 +47,16 @@ const SingleTodo = ({
         >
           {content}
         </p>
-        <button>
+        <div className='flex gap-x-4'>
+          <RxPencil2
+            onClick={() => startEdit()}
+            className='scale-150 opacity-50 cursor-pointer'
+          />
           <RxCross2
             onClick={() => removeTodo()}
-            className='scale-150 opacity-50'
+            className='scale-150 opacity-50 cursor-pointer'
           />
-        </button>
+        </div>
       </div>
       <span
         onClick={() => setIsCompleted(!isCompleted)}
@@ -61,12 +71,17 @@ const SingleTodo = ({
     </div>
   )
 }
-const mapDistpatchtoPrpos = (distpatch: Function, ownProps: { id: number }) => {
-  const { id } = ownProps
+
+const mapDistpatchtoPrpos = (
+  distpatch: Function,
+  ownProps: { id: number; content: string }
+) => {
+  const { id, content } = ownProps
   return {
     removeTodo: () => distpatch({ type: REMOVE_TODO, payload: id }),
     setActive: () => distpatch({ type: IS_ACTIVE, payload: id }),
     setCompleted: () => distpatch({ type: IS_COMPLETED, payload: id }),
+    startEdit: () => distpatch({ type: START_EDIT, payload: { id, content } }),
   }
 }
 export default connect(null, mapDistpatchtoPrpos)(SingleTodo)

@@ -4,51 +4,85 @@ import {
   IS_COMPLETED,
   IS_ACTIVE,
   CLEAR_COMPLETED,
+  START_EDIT,
+  END_EDIT,
 } from "./action"
-const initialState: {}[] = [
-  {
-    id: 1682622006924,
-    content: "todo 1",
-    type: "active",
-  },
-]
+type InitialStatePrpos = {
+  todos: {}[]
+  isEdit: boolean
+  editID: number
+  editContent: string
+}
+const initialState: InitialStatePrpos = {
+  todos: [
+    {
+      id: 1682622006924,
+      content: "todo 1",
+      type: "active",
+    },
+  ],
+  isEdit: false,
+  editID: 0,
+  editContent: "",
+}
 
 const reducer = (
   state = initialState,
-  action: { type: string; payload: number }
+  action: { type: string; payload: any }
 ) => {
   if (action.type === ADD_TODO) {
-    console.log("ok")
-
-    return [
-      ...state,
+    const newTodos = [
+      ...state.todos,
       {
         id: new Date().getTime(),
         content: action.payload,
         type: "active",
       },
     ]
+    return { ...state, todos: newTodos }
   }
   if (action.type === REMOVE_TODO) {
-    const newState = state.filter((item: any) => item.id !== action.payload)
-    return [...newState]
+    const newTodos = state.todos.filter(
+      (item: any) => item.id !== action.payload
+    )
+    return { ...state, todos: newTodos }
   }
   if (action.type === IS_ACTIVE) {
-    const newState = state.map((item: any) => {
-      if (item.id === action.payload) return { ...item, type: "active" }
+    const newTodos = state.todos.map((item: any) => {
+      if (item.id === action.payload) {
+        return { ...item, type: "active" }
+      }
       return item
     })
-    return newState
+    return { ...state, todos: newTodos }
   }
   if (action.type === IS_COMPLETED) {
-    const newState = state.map((item: any) => {
-      if (item.id === action.payload) return { ...item, type: "completed" }
+    const newTodos = state.todos.map((item: any) => {
+      if (item.id === action.payload) {
+        return { ...item, type: "completed" }
+      }
       return item
     })
-    return newState
+    return { ...state, todos: newTodos }
+  }
+  if (action.type === START_EDIT) {
+    const { id, content } = action.payload
+    return { ...state, isEdit: true, editID: id, editContent: content }
+  }
+  if (action.type === END_EDIT) {
+    const newTodos = state.todos.map((item: any) => {
+      if (item.id === state.editID) return { ...item, content: action.payload }
+      return item
+    })
+
+    return { todos: newTodos, isEdit: false, editID: 0, editContent: "" }
   }
   if (action.type === CLEAR_COMPLETED) {
-    return [...state.filter((item: any) => item.type === "active")]
+    const newTodos = state.todos.filter((item: any) => item.type === "active")
+    return {
+      ...state,
+      todos: newTodos,
+    }
   }
   return state
 }
