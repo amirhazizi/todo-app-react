@@ -3,6 +3,7 @@ import { RxCross2, RxPencil2 } from "react-icons/rx"
 import { connect } from "react-redux"
 import { REMOVE_TODO, IS_COMPLETED, IS_ACTIVE, START_EDIT } from "../action"
 import { useState, useEffect } from "react"
+import { toast } from "react-toastify"
 type SingleTodoProps = {
   id: number
   content: string
@@ -49,11 +50,17 @@ const SingleTodo = ({
         </p>
         <div className='flex gap-x-4'>
           <RxPencil2
-            onClick={() => startEdit()}
+            onClick={() => {
+              startEdit()
+              toast.info("Now you can edit...")
+            }}
             className='scale-150 opacity-50 cursor-pointer'
           />
           <RxCross2
-            onClick={() => removeTodo()}
+            onClick={() => {
+              removeTodo()
+              toast.warning("Todo Removed.")
+            }}
             className='scale-150 opacity-50 cursor-pointer'
           />
         </div>

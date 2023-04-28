@@ -3,11 +3,13 @@ import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { ADD_TODO, CLEAR_COMPLETED, END_EDIT } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { ToastContainer, toast, Slide } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 type InitialStatePrpos = {
   todos: {}[]
   isEdit: boolean
@@ -71,10 +73,12 @@ function App({
     if (todoText && !isEdit) {
       addTodo(todoText)
       setTodoText("")
+      toast.success("New Todo Added")
     }
     if (todoText && isEdit) {
       completeEdit(todoText)
       setTodoText("")
+      toast.success("Todo Edited")
     }
   }
   return (
@@ -153,40 +157,49 @@ function App({
                     </button>
                   </div>
                   <button
-                    onClick={() => clearCompleted()}
+                    onClick={() => {
+                      clearCompleted()
+                      toast.info("Completed Todos Removed.")
+                    }}
                     className='filter-btn'
                   >
                     Clear Completed
                   </button>
                 </div>
               </div>
-              <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold md:hidden '>
-                <button
-                  onClick={() => setFilterType("all")}
-                  className='filter-btn'
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => setFilterType("active")}
-                  className='filter-btn'
-                >
-                  Active
-                </button>
-                <button
-                  onClick={() => setFilterType("completed")}
-                  className='filter-btn'
-                >
-                  Completed
-                </button>
-              </div>
             </div>
           )}
+          <div
+            className={`flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold transition-opacity md:hidden ${
+              todos.length > 0 ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <button onClick={() => setFilterType("all")} className='filter-btn'>
+              All
+            </button>
+            <button
+              onClick={() => setFilterType("active")}
+              className='filter-btn'
+            >
+              Active
+            </button>
+            <button
+              onClick={() => setFilterType("completed")}
+              className='filter-btn'
+            >
+              Completed
+            </button>
+          </div>
         </div>
         <p className='dnd text-xs font-bold  absolute bottom-14 left-1/2 -translate-x-1/2'>
           Drag and drop to reader list
         </p>
       </div>
+      <ToastContainer
+        position='top-right'
+        autoClose={2300}
+        transition={Slide}
+      />
     </main>
   )
 }
