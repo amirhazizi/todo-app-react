@@ -47,6 +47,11 @@ main {
     background: var(--cl-BG);
 }
 
+.bg-image {
+    max-height: 17rem;
+    object-fit: cover;
+}
+
 main>div {
     width: min(85vw, 500px);
     background: var(--cl-Main-BG);

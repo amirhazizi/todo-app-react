@@ -35,16 +35,16 @@ function App({ todos, addTodo }: AppProps) {
   }
   return (
     <main
-      className={`relative grid place-items-center min-h-screen ${
+      className={`relative grid justify-center items-start min-h-screen ${
         themeTrigger ? "light-theme" : "dark-theme"
       } `}
     >
       <img
-        className='absolute top-0 left-0 w-full'
+        className='bg-image absolute top-0 left-0 w-full'
         src={themeTrigger ? lightMobileBG : darkMobileBG}
         alt='light BG'
       />
-      <div className='space-y-8 z-30'>
+      <div className='space-y-8 z-30 pt-24'>
         <div className='flex justify-between items-center'>
           <h1 className='text-4xl pt-2 tracking-widest text-white'>TODO</h1>
           <button onClick={() => setThemeTrigger(!themeTrigger)}>
@@ -70,29 +70,31 @@ function App({ todos, addTodo }: AppProps) {
             <span className='absolute rounded-full top-1/2 left-6 -translate-y-1/2'></span>
             <button
               type='submit'
-              className={`absolute right-0 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all ${
-                todoText.length > 0
-                  ? "-translate-x-10 opacity-100 "
-                  : "translate-x-5 opacity-0"
+              className={`absolute right-0 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity  ${
+                todoText.length > 0 ? "opacity-100 " : "opacity-0"
               }`}
             >
               <BsCheckLg className='text-2xl fill-green-500' />
             </button>
           </form>
-          <div className='container rounded-lg'>
-            {todos.map((todo: any) => {
-              return <SingleTodo key={todo.id} {...todo} />
-            })}
-            <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm'>
-              <p className='total-btn'>2 items left</p>
-              <button className='filter-btn'>Clear Completed</button>
+          {todos.length > 0 && (
+            <div className='space-y-5'>
+              <div className='container rounded-lg'>
+                {todos.map((todo: any) => {
+                  return <SingleTodo key={todo.id} {...todo} />
+                })}
+                <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm'>
+                  <p className='total-btn'>2 items left</p>
+                  <button className='filter-btn'>Clear Completed</button>
+                </div>
+              </div>
+              <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold '>
+                <button className='filter-btn'>All</button>
+                <button className='filter-btn'>Active</button>
+                <button className='filter-btn'>Completed</button>
+              </div>
             </div>
-          </div>
-          <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold '>
-            <button className='filter-btn'>All</button>
-            <button className='filter-btn'>Active</button>
-            <button className='filter-btn'>Completed</button>
-          </div>
+          )}
         </div>
         <p className='dnd text-center text-xs font-bold'>
           Drag and drop to reader list

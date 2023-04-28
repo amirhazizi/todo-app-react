@@ -23,6 +23,10 @@ const reducer = (
       },
     ]
   }
+  if (action.type === REMOVE_TODO) {
+    const newState = state.filter((item: any) => item.id !== action.payload)
+    return [...newState]
+  }
   return state
 }
 export default reducer

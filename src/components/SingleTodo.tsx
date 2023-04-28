@@ -6,15 +6,18 @@ type SingleTodoProps = {
   id: number
   content: string
   type: string
-  addTodo: Function
+  removeTodo: Function
 }
-const SingleTodo = ({ id, content, type, addTodo }: SingleTodoProps) => {
+const SingleTodo = ({ id, content, type, removeTodo }: SingleTodoProps) => {
   return (
     <div className='todo relative py-4 w-full'>
       <div className='px-5 pl-16 flex justify-between items-center'>
         <p className='cursor-pointer pt-1'>{content}</p>
         <button>
-          <RxCross2 className='scale-150 opacity-50' />
+          <RxCross2
+            onClick={() => removeTodo()}
+            className='scale-150 opacity-50'
+          />
         </button>
       </div>
       <span className='cursor-pointer absolute rounded-full top-1/2 left-6 -translate-y-1/2 todo-span'>
@@ -25,6 +28,6 @@ const SingleTodo = ({ id, content, type, addTodo }: SingleTodoProps) => {
 }
 const mapDistpatchtoPrpos = (distpatch: Function, ownProps: { id: number }) => {
   const { id } = ownProps
-  return { addTodo: () => distpatch({ type: REMOVE_TODO, payload: id }) }
+  return { removeTodo: () => distpatch({ type: REMOVE_TODO, payload: id }) }
 }
 export default connect(null, mapDistpatchtoPrpos)(SingleTodo)
