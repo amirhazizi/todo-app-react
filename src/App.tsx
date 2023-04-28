@@ -2,7 +2,7 @@ import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
-import { ADD_TODO, CLEAR_COMPLETED } from "./action"
+import { ADD_TODO, CLEAR_COMPLETED, FILTER_TODO } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
 type AppProps = {
@@ -17,6 +17,8 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
   const [totalActive, setTotalActive] = useState(0)
+  const [tempTodos, setTempTodos] = useState(todos)
+  const [filterType, setFilterType] = useState("all")
   useEffect(() => {
     if (
       window.matchMedia &&
@@ -30,7 +32,19 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
   useEffect(() => {
     const actives = todos.filter((item: any) => item.type === "active")
     setTotalActive(actives.length)
+    setTempTodos(todos)
   }, [todos])
+  useEffect(() => {
+    if (filterType === "active") {
+      const newTodo = todos.filter((todo: any) => todo.type === "active")
+      setTempTodos(newTodo)
+    } else if (filterType === "completed") {
+      const newTodo = todos.filter((todo: any) => todo.type === "completed")
+      setTempTodos(newTodo)
+    } else {
+      setTempTodos(todos)
+    }
+  }, [filterType])
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (todoText) {
@@ -85,7 +99,7 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
           {todos.length > 0 && (
             <div className='space-y-5'>
               <div className='container rounded-lg'>
-                {todos.map((todo: any) => {
+                {tempTodos.map((todo: any) => {
                   return <SingleTodo key={todo.id} {...todo} />
                 })}
                 <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm'>
@@ -99,9 +113,24 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
                 </div>
               </div>
               <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold '>
-                <button className='filter-btn'>All</button>
-                <button className='filter-btn'>Active</button>
-                <button className='filter-btn'>Completed</button>
+                <button
+                  onClick={() => setFilterType("all")}
+                  className='filter-btn'
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setFilterType("active")}
+                  className='filter-btn'
+                >
+                  Active
+                </button>
+                <button
+                  onClick={() => setFilterType("completed")}
+                  className='filter-btn'
+                >
+                  Completed
+                </button>
               </div>
             </div>
           )}
