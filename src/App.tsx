@@ -1,5 +1,7 @@
 import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
+import lightDesktopBG from "./assets/bg-desktop-light.jpg"
+import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
 import { ADD_TODO, CLEAR_COMPLETED, FILTER_TODO } from "./action"
@@ -59,13 +61,18 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
       } `}
     >
       <img
-        className='bg-image absolute top-0 left-0 w-full'
+        className='bg-image absolute top-0 left-0 w-full md:hidden'
         src={themeTrigger ? lightMobileBG : darkMobileBG}
         alt='light BG'
       />
-      <div className='space-y-8 z-30 py-24 h-full'>
+      <img
+        className='bg-image absolute top-0 left-0 w-full hidden md:block'
+        src={themeTrigger ? lightDesktopBG : darkDesktopBG}
+        alt='light BG'
+      />
+      <div className='space-y-8 z-30 py-12 h-full md:py-14'>
         <div className='flex justify-between items-center'>
-          <h1 className='text-4xl pt-2 tracking-widest text-white'>TODO</h1>
+          <h1 className='logo text-3xl pt-2 font-bold text-white'>TODO</h1>
           <button onClick={() => setThemeTrigger(!themeTrigger)}>
             {themeTrigger ? (
               <BsFillMoonFill className='fill-white scale-125' />
@@ -83,7 +90,7 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
               type='text'
               value={todoText}
               onChange={(e) => setTodoText(e.target.value)}
-              className='w-full py-5 pb-4  pl-16 rounded-lg  container focus:outline-none form-text'
+              className='w-full py-5 pb-4  pl-16 rounded-lg container input-container focus:outline-none form-text'
               placeholder='Create a new Todo'
             />
             <span className='absolute rounded-full top-1/2 left-6 -translate-y-1/2'></span>
@@ -102,8 +109,28 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
                 {tempTodos.map((todo: any) => {
                   return <SingleTodo key={todo.id} {...todo} />
                 })}
-                <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm'>
+                <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm md:py-1 md:px-3'>
                   <p className='total-btn'>{totalActive} items left</p>
+                  <div className=' gap-x-5 justify-center py-3 text-sm font-bold hidden md:flex md:text-base'>
+                    <button
+                      onClick={() => setFilterType("all")}
+                      className='filter-btn'
+                    >
+                      All
+                    </button>
+                    <button
+                      onClick={() => setFilterType("active")}
+                      className='filter-btn'
+                    >
+                      Active
+                    </button>
+                    <button
+                      onClick={() => setFilterType("completed")}
+                      className='filter-btn'
+                    >
+                      Completed
+                    </button>
+                  </div>
                   <button
                     onClick={() => clearCompleted()}
                     className='filter-btn'
@@ -112,7 +139,7 @@ function App({ todos, addTodo, clearCompleted }: AppProps) {
                   </button>
                 </div>
               </div>
-              <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold '>
+              <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold md:hidden '>
                 <button
                   onClick={() => setFilterType("all")}
                   className='filter-btn'
