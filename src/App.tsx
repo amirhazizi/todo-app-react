@@ -4,12 +4,13 @@ import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
-import { ADD_TODO, CLEAR_COMPLETED, END_EDIT } from "./action"
+import { ADD_TODO, CLEAR_COMPLETED, END_EDIT, LOCAL_STORAGE } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { ToastContainer, toast, Slide } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { useLocalStorage } from "usehooks-ts"
 type InitialStatePrpos = {
   todos: {}[]
   isEdit: boolean
@@ -21,6 +22,7 @@ type AppProps = {
   addTodo: Function
   clearCompleted: Function
   completeEdit: Function
+  setLocalStorage: Function
   editContent: string
   isEdit: boolean
 }
@@ -31,15 +33,17 @@ function App({
   addTodo,
   clearCompleted,
   completeEdit,
+  setLocalStorage,
 }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
   const [totalActive, setTotalActive] = useState(0)
   const [tempTodos, setTempTodos] = useState(todos)
   const [filterType, setFilterType] = useState("all")
-  const [parent] = useAutoAnimate()
+  const [localData, setLocalData] = useLocalStorage("frontmentor-todo", [{}])
 
-  useEffect(() => {
+  const [parent] = useAutoAnimate()
+  const themeSwitcher = () => {
     if (
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -48,11 +52,17 @@ function App({
     } else {
       setThemeTrigger(true)
     }
+  }
+
+  useEffect(() => {
+    themeSwitcher()
+    setLocalStorage(localData)
   }, [])
   useEffect(() => {
     const actives = todos.filter((item: any) => item.type === "active")
     setTotalActive(actives.length)
     setTempTodos(todos)
+    setLocalData(todos)
   }, [todos])
   useEffect(() => {
     if (filterType === "active") {
@@ -213,6 +223,8 @@ const mapDistpatchtoPrpos = (distpatch: Function) => {
     clearCompleted: () => distpatch({ type: CLEAR_COMPLETED }),
     completeEdit: (text: string) =>
       distpatch({ type: END_EDIT, payload: text }),
+    setLocalStorage: (data: [{}]) =>
+      distpatch({ type: LOCAL_STORAGE, payload: data }),
   }
 }
 export default connect(mapStateToProps, mapDistpatchtoPrpos)(App)

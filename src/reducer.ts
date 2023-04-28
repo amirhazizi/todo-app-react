@@ -6,21 +6,17 @@ import {
   CLEAR_COMPLETED,
   START_EDIT,
   END_EDIT,
+  LOCAL_STORAGE,
 } from "./action"
+
 type InitialStatePrpos = {
-  todos: {}[]
+  todos: []
   isEdit: boolean
   editID: number
   editContent: string
 }
 const initialState: InitialStatePrpos = {
-  todos: [
-    {
-      id: 1682622006924,
-      content: "todo 1",
-      type: "active",
-    },
-  ],
+  todos: [],
   isEdit: false,
   editID: 0,
   editContent: "",
@@ -84,6 +80,13 @@ const reducer = (
       todos: newTodos,
     }
   }
+  if (action.type === LOCAL_STORAGE) {
+    return {
+      ...state,
+      todos: action.payload,
+    }
+  }
+
   return state
 }
 export default reducer

@@ -27,6 +27,7 @@ const SingleTodo = ({
   startEdit,
 }: SingleTodoProps) => {
   const [isCompleted, setIsCompleted] = useState(false)
+
   useEffect(() => {
     if (isCompleted) {
       setCompleted()
@@ -37,6 +38,7 @@ const SingleTodo = ({
   useEffect(() => {
     if (type !== "active") setIsCompleted(true)
   }, [])
+
   return (
     <div className='todo relative py-4 w-full'>
       <div className='px-5 pl-16 flex justify-between items-center'>
