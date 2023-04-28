@@ -55,6 +55,7 @@ main {
 main>div {
     width: min(85vw, 500px);
     background: var(--cl-Main-BG);
+    /* grid-template-columns: 1fr 1fr auto; */
 }
 
 .container {
@@ -107,6 +108,13 @@ span {
     background: var(--gr-Check-Background);
 }
 
+.completed-span::before {
+    background: linear-gradient(45deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%)) border-box;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    border-color: transparent;
+}
 
 .filter-btn,
 .total-btn {

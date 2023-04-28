@@ -1,2 +1,5 @@
 export const ADD_TODO = "ADD_TODO"
 export const REMOVE_TODO = "REMOVE_TODO"
+export const IS_COMPLETED = "IS_COMPLETED"
+export const IS_ACTIVE = "IS_ACTIVE"
+export const CLEAR_COMPLETED = "CLEAR_COMPLETED"

@@ -2,20 +2,21 @@ import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
-import { ADD_TODO, REMOVE_TODO } from "./action"
+import { ADD_TODO, CLEAR_COMPLETED } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
 type AppProps = {
   todos: {}[]
   addTodo: Function
+  clearCompleted: Function
 }
 type TodoAtr = {
   id: number
 }
-function App({ todos, addTodo }: AppProps) {
+function App({ todos, addTodo, clearCompleted }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
-
+  const [totalActive, setTotalActive] = useState(0)
   useEffect(() => {
     if (
       window.matchMedia &&
@@ -26,6 +27,10 @@ function App({ todos, addTodo }: AppProps) {
       setThemeTrigger(true)
     }
   }, [])
+  useEffect(() => {
+    const actives = todos.filter((item: any) => item.type === "active")
+    setTotalActive(actives.length)
+  }, [todos])
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (todoText) {
@@ -44,7 +49,7 @@ function App({ todos, addTodo }: AppProps) {
         src={themeTrigger ? lightMobileBG : darkMobileBG}
         alt='light BG'
       />
-      <div className='space-y-8 z-30 pt-24'>
+      <div className='space-y-8 z-30 py-24 h-full'>
         <div className='flex justify-between items-center'>
           <h1 className='text-4xl pt-2 tracking-widest text-white'>TODO</h1>
           <button onClick={() => setThemeTrigger(!themeTrigger)}>
@@ -55,7 +60,7 @@ function App({ todos, addTodo }: AppProps) {
             )}
           </button>
         </div>
-        <div className='space-y-5'>
+        <div className='space-y-5 self-start'>
           <form
             onSubmit={handleSubmit}
             className='relative z-10 overflow-hidden'
@@ -84,8 +89,13 @@ function App({ todos, addTodo }: AppProps) {
                   return <SingleTodo key={todo.id} {...todo} />
                 })}
                 <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm'>
-                  <p className='total-btn'>2 items left</p>
-                  <button className='filter-btn'>Clear Completed</button>
+                  <p className='total-btn'>{totalActive} items left</p>
+                  <button
+                    onClick={() => clearCompleted()}
+                    className='filter-btn'
+                  >
+                    Clear Completed
+                  </button>
                 </div>
               </div>
               <div className='flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold '>
@@ -96,7 +106,7 @@ function App({ todos, addTodo }: AppProps) {
             </div>
           )}
         </div>
-        <p className='dnd text-center text-xs font-bold'>
+        <p className='dnd text-xs font-bold  absolute bottom-14 left-1/2 -translate-x-1/2'>
           Drag and drop to reader list
         </p>
       </div>
@@ -111,6 +121,7 @@ const mapDistpatchtoPrpos = (distpatch: Function, ownProps: { id: number }) => {
   const { id } = ownProps
   return {
     addTodo: (text: string) => distpatch({ type: ADD_TODO, payload: text }),
+    clearCompleted: () => distpatch({ type: CLEAR_COMPLETED }),
   }
 }
 export default connect(mapStateToProps, mapDistpatchtoPrpos)(App)
