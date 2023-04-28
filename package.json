@@ -11,6 +11,7 @@
     "t-watch": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^1.0.0-beta.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",

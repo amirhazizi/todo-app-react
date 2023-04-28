@@ -3,10 +3,11 @@ import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { ADD_TODO, CLEAR_COMPLETED, END_EDIT } from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 type InitialStatePrpos = {
   todos: {}[]
   isEdit: boolean
@@ -21,9 +22,6 @@ type AppProps = {
   editContent: string
   isEdit: boolean
 }
-type TodoAtr = {
-  id: number
-}
 function App({
   todos,
   isEdit,
@@ -37,6 +35,8 @@ function App({
   const [totalActive, setTotalActive] = useState(0)
   const [tempTodos, setTempTodos] = useState(todos)
   const [filterType, setFilterType] = useState("all")
+  const [parent] = useAutoAnimate()
+
   useEffect(() => {
     if (
       window.matchMedia &&
@@ -86,12 +86,12 @@ function App({
       <img
         className='bg-image absolute top-0 left-0 w-full md:hidden'
         src={themeTrigger ? lightMobileBG : darkMobileBG}
-        alt='light BG'
+        alt='mobile BG'
       />
       <img
         className='bg-image absolute top-0 left-0 w-full hidden md:block'
         src={themeTrigger ? lightDesktopBG : darkDesktopBG}
-        alt='light BG'
+        alt='desktop BG'
       />
       <div className='space-y-8 z-30 py-12 h-full md:py-14'>
         <div className='flex justify-between items-center'>
@@ -105,21 +105,18 @@ function App({
           </button>
         </div>
         <div className='space-y-5 self-start'>
-          <form
-            onSubmit={handleSubmit}
-            className='relative z-10 overflow-hidden'
-          >
+          <form onSubmit={handleSubmit} className='relative z-10'>
             <input
               type='text'
               value={todoText}
               onChange={(e) => setTodoText(e.target.value)}
-              className='w-full py-5 pb-4  pl-16 rounded-lg container input-container focus:outline-none form-text'
+              className='py-5 pb-4  pl-16 rounded-lg container input-container focus:outline-none form-text'
               placeholder='Create a new Todo'
             />
             <span className='absolute rounded-full top-1/2 left-6 -translate-y-1/2'></span>
             <button
               type='submit'
-              className={`absolute right-0 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity  ${
+              className={`absolute right-1 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity  ${
                 todoText.length > 0 ? "opacity-100 " : "opacity-0"
               }`}
             >
@@ -128,10 +125,11 @@ function App({
           </form>
           {todos.length > 0 && (
             <div className='space-y-5'>
-              <div className='container rounded-lg'>
+              <div className='container rounded-lg' ref={parent}>
                 {tempTodos.map((todo: any) => {
                   return <SingleTodo key={todo.id} {...todo} />
                 })}
+
                 <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm md:py-1 md:px-3'>
                   <p className='total-btn'>{totalActive} items left</p>
                   <div className=' gap-x-5 justify-center py-3 text-sm font-bold hidden md:flex md:text-base'>
