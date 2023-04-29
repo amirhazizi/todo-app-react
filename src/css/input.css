@@ -74,6 +74,7 @@ main>div {
 
 .todo {
     border-bottom: 1px solid var(--cl-border);
+    background: var(--cl-Container-BG);
     font-size: .95rem;
 }
 

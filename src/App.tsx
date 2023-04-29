@@ -4,13 +4,25 @@ import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
 import { useState, useEffect } from "react"
-import { ADD_TODO, CLEAR_COMPLETED, END_EDIT, LOCAL_STORAGE } from "./action"
+import {
+  ADD_TODO,
+  CLEAR_COMPLETED,
+  END_EDIT,
+  LOCAL_STORAGE,
+  DRAG_AND_DROP,
+} from "./action"
 import { connect } from "react-redux"
 import SingleTodo from "./components/SingleTodo"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { ToastContainer, toast, Slide } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useLocalStorage } from "usehooks-ts"
+import { DndContext, closestCenter } from "@dnd-kit/core"
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
 type InitialStatePrpos = {
   todos: {}[]
   isEdit: boolean
@@ -23,6 +35,7 @@ type AppProps = {
   clearCompleted: Function
   completeEdit: Function
   setLocalStorage: Function
+  dragnDrop: Function
   editContent: string
   isEdit: boolean
 }
@@ -34,6 +47,7 @@ function App({
   clearCompleted,
   completeEdit,
   setLocalStorage,
+  dragnDrop,
 }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
@@ -41,7 +55,6 @@ function App({
   const [tempTodos, setTempTodos] = useState(todos)
   const [filterType, setFilterType] = useState("all")
   const [localData, setLocalData] = useLocalStorage("frontmentor-todo", [{}])
-
   const [parent] = useAutoAnimate()
   const themeSwitcher = () => {
     if (
@@ -138,11 +151,33 @@ function App({
             </button>
           </form>
           {todos.length > 0 && (
-            <div className='space-y-5'>
+            <DndContext
+              onDragEnd={(e) => {
+                const { active, over } = e
+
+                if (over) {
+                  if (active.id !== over.id) {
+                    const activeIndex = todos
+                      .map((item: any) => item.id)
+                      .indexOf(active.id)
+                    const overIndex = todos
+                      .map((item: any) => item.id)
+                      .indexOf(over.id)
+                    dragnDrop(arrayMove(todos, activeIndex, overIndex))
+                  }
+                }
+              }}
+              collisionDetection={closestCenter}
+            >
               <div className='container rounded-lg' ref={parent}>
-                {tempTodos.map((todo: any) => {
-                  return <SingleTodo key={todo.id} {...todo} />
-                })}
+                <SortableContext
+                  items={tempTodos}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {tempTodos.map((todo: any) => {
+                    return <SingleTodo key={todo.id} {...todo} />
+                  })}
+                </SortableContext>
 
                 <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm md:py-1 md:px-3'>
                   <p className='total-btn'>{totalActive} items left</p>
@@ -169,7 +204,6 @@ function App({
                   <button
                     onClick={() => {
                       clearCompleted()
-                      toast.info("Completed Todos Removed.")
                     }}
                     className='filter-btn'
                   >
@@ -177,7 +211,7 @@ function App({
                   </button>
                 </div>
               </div>
-            </div>
+            </DndContext>
           )}
           <div
             className={`flex gap-x-5 container justify-center rounded-lg py-3 text-sm font-bold transition-opacity md:hidden ${
@@ -225,6 +259,8 @@ const mapDistpatchtoPrpos = (distpatch: Function) => {
       distpatch({ type: END_EDIT, payload: text }),
     setLocalStorage: (data: [{}]) =>
       distpatch({ type: LOCAL_STORAGE, payload: data }),
+    dragnDrop: (newState: [{}]) =>
+      distpatch({ type: DRAG_AND_DROP, payload: newState }),
   }
 }
 export default connect(mapStateToProps, mapDistpatchtoPrpos)(App)

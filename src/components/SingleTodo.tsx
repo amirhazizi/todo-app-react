@@ -1,5 +1,8 @@
 import { BsCheckLg } from "react-icons/bs"
 import { RxCross2, RxPencil2 } from "react-icons/rx"
+import { AiOutlineDrag } from "react-icons/ai"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { connect } from "react-redux"
 import { REMOVE_TODO, IS_COMPLETED, IS_ACTIVE, START_EDIT } from "../action"
 import { useState, useEffect } from "react"
@@ -19,6 +22,7 @@ type InitialStatePrpos = {
   editContent: string
 }
 const SingleTodo = ({
+  id,
   content,
   type,
   removeTodo,
@@ -27,6 +31,9 @@ const SingleTodo = ({
   startEdit,
 }: SingleTodoProps) => {
   const [isCompleted, setIsCompleted] = useState(false)
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id })
+  const style = { transform: CSS.Transform.toString(transform), transition }
 
   useEffect(() => {
     if (isCompleted) {
@@ -40,7 +47,11 @@ const SingleTodo = ({
   }, [])
 
   return (
-    <div className='todo relative py-4 w-full'>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className='todo relative py-4 w-full rounded-t-lg'
+    >
       <div className='px-5 pl-16 flex justify-between items-center'>
         <p
           onClick={() => setIsCompleted(!isCompleted)}
@@ -63,6 +74,11 @@ const SingleTodo = ({
               removeTodo()
               toast.warning("Todo Removed.")
             }}
+            className='scale-150 opacity-50 cursor-pointer'
+          />
+          <AiOutlineDrag
+            {...attributes}
+            {...listeners}
             className='scale-150 opacity-50 cursor-pointer'
           />
         </div>

@@ -7,8 +7,9 @@ import {
   START_EDIT,
   END_EDIT,
   LOCAL_STORAGE,
+  DRAG_AND_DROP,
 } from "./action"
-
+import { toast } from "react-toastify"
 type InitialStatePrpos = {
   todos: []
   isEdit: boolean
@@ -75,12 +76,23 @@ const reducer = (
   }
   if (action.type === CLEAR_COMPLETED) {
     const newTodos = state.todos.filter((item: any) => item.type === "active")
+    if (
+      newTodos.length !== state.todos.length &&
+      newTodos.every((aElement, index) => aElement !== state.todos[index])
+    )
+      toast.info("Completed Todos Removed.")
     return {
       ...state,
       todos: newTodos,
     }
   }
   if (action.type === LOCAL_STORAGE) {
+    return {
+      ...state,
+      todos: action.payload,
+    }
+  }
+  if (action.type === DRAG_AND_DROP) {
     return {
       ...state,
       todos: action.payload,
