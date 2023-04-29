@@ -1,9 +1,17 @@
+import { useState, useEffect } from "react"
+
 import lightMobileBG from "./assets/bg-mobile-light.jpg"
 import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
-import { BsFillMoonFill, BsSunFill, BsCheckLg } from "react-icons/bs"
-import { useState, useEffect } from "react"
+
+import {
+  BsFillMoonFill,
+  BsSunFill,
+  BsCheckLg,
+  BsDownload,
+} from "react-icons/bs"
+
 import {
   ADD_TODO,
   CLEAR_COMPLETED,
@@ -12,17 +20,25 @@ import {
   DRAG_AND_DROP,
 } from "./action"
 import { connect } from "react-redux"
+
 import SingleTodo from "./components/SingleTodo"
+
 import { useAutoAnimate } from "@formkit/auto-animate/react"
+
 import { ToastContainer, toast, Slide } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+
 import { useLocalStorage } from "usehooks-ts"
+
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import {
   arrayMove,
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
+
+import { handleExport } from "./exportImport"
+
 type InitialStatePrpos = {
   todos: {}[]
   isEdit: boolean
@@ -30,7 +46,7 @@ type InitialStatePrpos = {
   editContent: string
 }
 type AppProps = {
-  todos: {}[]
+  todos: [{}]
   addTodo: Function
   clearCompleted: Function
   completeEdit: Function
@@ -52,7 +68,7 @@ function App({
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
   const [totalActive, setTotalActive] = useState(0)
-  const [tempTodos, setTempTodos] = useState(todos)
+  const [tempTodos, setTempTodos] = useState<any>(todos)
   const [filterType, setFilterType] = useState("all")
   const [localData, setLocalData] = useLocalStorage("frontmentor-todo", [{}])
   const [parent] = useAutoAnimate()
@@ -235,6 +251,14 @@ function App({
             </button>
           </div>
         </div>
+        {todos.length > 0 && (
+          <button
+            className='flex bg-green-500 text-white p-3 px-7 gap-x-3 items-center mx-auto rounded-lg transition-colors hover:bg-green-400 text-lg'
+            onClick={() => handleExport(todos)}
+          >
+            <BsDownload /> Export
+          </button>
+        )}
         <p className='dnd text-xs font-bold  absolute bottom-14 left-1/2 -translate-x-1/2'>
           Drag and drop to reader list
         </p>
