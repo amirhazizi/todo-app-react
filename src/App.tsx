@@ -10,6 +10,7 @@ import {
   BsSunFill,
   BsCheckLg,
   BsDownload,
+  BsUpload,
 } from "react-icons/bs"
 
 import {
@@ -18,6 +19,7 @@ import {
   END_EDIT,
   LOCAL_STORAGE,
   DRAG_AND_DROP,
+  UPLOAD_TODO,
 } from "./action"
 import { connect } from "react-redux"
 
@@ -37,10 +39,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 
-import { handleExport } from "./exportImport"
+import { handleExport, handleImport } from "./exportImport"
 
 type InitialStatePrpos = {
-  todos: {}[]
+  todos: [{}]
   isEdit: boolean
   editID: number
   editContent: string
@@ -52,6 +54,7 @@ type AppProps = {
   completeEdit: Function
   setLocalStorage: Function
   dragnDrop: Function
+  uploadTodo: Function
   editContent: string
   isEdit: boolean
 }
@@ -64,6 +67,7 @@ function App({
   completeEdit,
   setLocalStorage,
   dragnDrop,
+  uploadTodo,
 }: AppProps) {
   const [themeTrigger, setThemeTrigger] = useState(true)
   const [todoText, setTodoText] = useState("")
@@ -251,14 +255,31 @@ function App({
             </button>
           </div>
         </div>
-        {todos.length > 0 && (
-          <button
-            className='flex bg-green-500 text-white p-3 px-7 gap-x-3 items-center mx-auto rounded-lg transition-colors hover:bg-green-400 text-lg'
-            onClick={() => handleExport(todos)}
-          >
-            <BsDownload /> Export
-          </button>
-        )}
+        <div className='flex gap-x-5 items-center justify-center'>
+          {todos.length > 0 && (
+            <button
+              className='flex bg-green-500 text-white p-3 px-7 gap-x-3 items-center rounded-lg transition-colors hover:bg-green-400 text-lg'
+              onClick={() => handleExport(todos)}
+            >
+              <BsDownload /> Export
+            </button>
+          )}
+          <div className='flex items-center'>
+            <label
+              htmlFor='fileUploader'
+              className='flex bg-red-500 text-white p-3 px-7 gap-x-3 items-center rounded-lg transition-colors hover:bg-red-400 text-lg'
+            >
+              <BsUpload />
+              Upload
+            </label>
+            <input
+              className='hidden'
+              type='file'
+              id='fileUploader'
+              onChange={(e) => handleImport(e)}
+            />
+          </div>
+        </div>
         <p className='dnd text-xs font-bold  absolute bottom-14 left-1/2 -translate-x-1/2'>
           Drag and drop to reader list
         </p>
@@ -285,6 +306,8 @@ const mapDistpatchtoPrpos = (distpatch: Function) => {
       distpatch({ type: LOCAL_STORAGE, payload: data }),
     dragnDrop: (newState: [{}]) =>
       distpatch({ type: DRAG_AND_DROP, payload: newState }),
+    uploadTodo: (newState: [{}]) =>
+      distpatch({ type: UPLOAD_TODO, payload: newState }),
   }
 }
 export default connect(mapStateToProps, mapDistpatchtoPrpos)(App)

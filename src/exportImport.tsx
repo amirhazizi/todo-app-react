@@ -10,3 +10,23 @@ export const handleExport = (todos: [{}]) => {
   utils.book_append_sheet(wb, ws, fileName)
   writeFile(wb, `${fileName}.xlsx`)
 }
+export const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  console.log("not working....")
+  if (!e.target.files) {
+    return
+  }
+  const file = e.target.files[0]
+
+  const reader = new FileReader()
+  reader.onload = (e: any) => {
+    const wb = read(e.target.result)
+    const sheets = wb.SheetNames
+    if (sheets.length) {
+      const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
+
+      reader.readAsArrayBuffer(file)
+      console.log(rows)
+      return rows
+    }
+  }
+}

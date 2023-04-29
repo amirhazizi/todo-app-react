@@ -8,6 +8,7 @@ import {
   END_EDIT,
   LOCAL_STORAGE,
   DRAG_AND_DROP,
+  UPLOAD_TODO,
 } from "./action"
 import { toast } from "react-toastify"
 type InitialStatePrpos = {
@@ -97,6 +98,13 @@ const reducer = (
       ...state,
       todos: action.payload,
     }
+  }
+  if (action.type === UPLOAD_TODO) {
+    // console.log(action.payload)
+    // return {
+    //   ...state,
+    //   todos: action.payload,
+    // }
   }
 
   return state
