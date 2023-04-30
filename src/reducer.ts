@@ -100,11 +100,10 @@ const reducer = (
     }
   }
   if (action.type === UPLOAD_TODO) {
-    // console.log(action.payload)
-    // return {
-    //   ...state,
-    //   todos: action.payload,
-    // }
+    return {
+      ...state,
+      todos: action.payload,
+    }
   }
 
   return state

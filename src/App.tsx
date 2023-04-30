@@ -5,6 +5,8 @@ import darkMobileBG from "./assets/bg-mobile-dark.jpg"
 import lightDesktopBG from "./assets/bg-desktop-light.jpg"
 import darkDesktopBG from "./assets/bg-desktop-dark.jpg"
 
+import { read, utils, writeFile } from "xlsx"
+
 import {
   BsFillMoonFill,
   BsSunFill,
@@ -38,8 +40,6 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-
-import { handleExport, handleImport } from "./exportImport"
 
 type InitialStatePrpos = {
   todos: [{}]
@@ -124,6 +124,42 @@ function App({
       toast.success("Todo Edited")
     }
   }
+
+  const handleExport = (todos: [{}]) => {
+    const heading = [["id", "content", "type"]]
+    const fileName = `TodoList-${new Date().getTime()}`
+    const wb = utils.book_new()
+    const ws = utils.json_to_sheet([])
+    utils.sheet_add_aoa(ws, heading)
+    utils.sheet_add_json(ws, todos, { origin: "A4", skipHeader: true })
+    utils.book_append_sheet(wb, ws, fileName)
+    writeFile(wb, `${fileName}.xlsx`)
+  }
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return
+    }
+    const file = e.target.files[0]
+    const promise = new Promise((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.readAsArrayBuffer(file)
+      fileReader.onload = (e) => {
+        const bufferArray = e.target?.result
+        const wb = read(bufferArray, { type: "buffer" })
+        const ws = wb.Sheets[wb.SheetNames[0]]
+        const data = utils.sheet_to_json(ws)
+        resolve(data)
+      }
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
+    })
+
+    promise.then((data) => {
+      uploadTodo(data)
+    })
+  }
   return (
     <main
       className={`relative grid justify-center items-start min-h-screen ${
@@ -140,16 +176,35 @@ function App({
         src={themeTrigger ? lightDesktopBG : darkDesktopBG}
         alt='desktop BG'
       />
-      <div className='space-y-8 z-30 py-12 h-full md:py-14'>
+      <div className='space-y-8 z-30 py-12 h-full grid md:py-14'>
         <div className='flex justify-between items-center'>
           <h1 className='logo text-3xl pt-2 font-bold text-white'>TODO</h1>
-          <button onClick={() => setThemeTrigger(!themeTrigger)}>
-            {themeTrigger ? (
-              <BsFillMoonFill className='fill-white scale-125' />
-            ) : (
-              <BsSunFill className='fill-white scale-125' />
+          <div className='flex gap-x-5 items-center justify-center'>
+            {todos.length > 0 && (
+              <BsDownload
+                className='fill-white cursor-pointer'
+                onClick={() => handleExport(todos)}
+              />
             )}
-          </button>
+            <div className='flex items-center'>
+              <label htmlFor='fileUploader'>
+                <BsUpload className='fill-white cursor-pointer' />
+              </label>
+              <input
+                className='hidden'
+                type='file'
+                id='fileUploader'
+                onChange={handleImport}
+              />
+            </div>
+            <button onClick={() => setThemeTrigger(!themeTrigger)}>
+              {themeTrigger ? (
+                <BsFillMoonFill className='fill-white scale-125' />
+              ) : (
+                <BsSunFill className='fill-white scale-125' />
+              )}
+            </button>
+          </div>
         </div>
         <div className='space-y-5 self-start'>
           <form onSubmit={handleSubmit} className='relative z-10'>
@@ -255,32 +310,8 @@ function App({
             </button>
           </div>
         </div>
-        <div className='flex gap-x-5 items-center justify-center'>
-          {todos.length > 0 && (
-            <button
-              className='flex bg-green-500 text-white p-3 px-7 gap-x-3 items-center rounded-lg transition-colors hover:bg-green-400 text-lg'
-              onClick={() => handleExport(todos)}
-            >
-              <BsDownload /> Export
-            </button>
-          )}
-          <div className='flex items-center'>
-            <label
-              htmlFor='fileUploader'
-              className='flex bg-red-500 text-white p-3 px-7 gap-x-3 items-center rounded-lg transition-colors hover:bg-red-400 text-lg'
-            >
-              <BsUpload />
-              Upload
-            </label>
-            <input
-              className='hidden'
-              type='file'
-              id='fileUploader'
-              onChange={(e) => handleImport(e)}
-            />
-          </div>
-        </div>
-        <p className='dnd text-xs font-bold  absolute bottom-14 left-1/2 -translate-x-1/2'>
+
+        <p className='dnd text-xs font-bold text-center self-end'>
           Drag and drop to reader list
         </p>
       </div>
