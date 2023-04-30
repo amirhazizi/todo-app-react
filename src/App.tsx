@@ -41,6 +41,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 
+import Footer from "./components/Footer"
 type InitialStatePrpos = {
   todos: [{}]
   isEdit: boolean
@@ -182,7 +183,7 @@ function App({
           <div className='flex gap-x-5 items-center justify-center'>
             {todos.length > 0 && (
               <BsDownload
-                className='fill-white cursor-pointer'
+                className='fill-white cursor-pointer scale-110'
                 onClick={() => handleExport(todos)}
               />
             )}
@@ -256,7 +257,7 @@ function App({
 
                 <div className='p-4 px-5 opacity-75 flex justify-between items-center text-sm md:py-1 md:px-3'>
                   <p className='total-btn'>{totalActive} items left</p>
-                  <div className=' gap-x-5 justify-center py-3 text-sm font-bold hidden md:flex md:text-base'>
+                  <div className=' gap-x-5 justify-center py-3 text-sm font-bold hidden md:flex ml-10 '>
                     <button
                       onClick={() => setFilterType("all")}
                       className='filter-btn'
@@ -315,6 +316,7 @@ function App({
           Drag and drop to reader list
         </p>
       </div>
+      <Footer />
       <ToastContainer
         position='top-right'
         autoClose={2300}
