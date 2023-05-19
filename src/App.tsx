@@ -43,13 +43,13 @@ import {
 
 import Footer from "./components/Footer"
 type InitialStatePrpos = {
-  todos: [{}]
+  todos: {}[]
   isEdit: boolean
   editID: number
   editContent: string
 }
 type AppProps = {
-  todos: [{}]
+  todos: {}[]
   addTodo: Function
   clearCompleted: Function
   completeEdit: Function
@@ -75,7 +75,9 @@ function App({
   const [totalActive, setTotalActive] = useState(0)
   const [tempTodos, setTempTodos] = useState<any>(todos)
   const [filterType, setFilterType] = useState("all")
-  const [localData, setLocalData] = useLocalStorage("frontmentor-todo", [{}])
+  const [localData, setLocalData] = useLocalStorage<
+    { id?: number; type?: string; content?: string }[]
+  >("frontmentor-todo", [{}])
   const [parent] = useAutoAnimate()
   const themeSwitcher = () => {
     if (
@@ -90,7 +92,11 @@ function App({
 
   useEffect(() => {
     themeSwitcher()
-    setLocalStorage(localData)
+    if (!localData[0]?.id) {
+      setLocalData([{}])
+    } else {
+      setLocalStorage(localData)
+    }
   }, [])
   useEffect(() => {
     const actives = todos.filter((item: any) => item.type === "active")
@@ -126,7 +132,7 @@ function App({
     }
   }
 
-  const handleExport = (todos: [{}]) => {
+  const handleExport = (todos: {}[]) => {
     const heading = [["id", "content", "type"]]
     const fileName = `TodoList-${new Date().getTime()}`
     const wb = utils.book_new()
