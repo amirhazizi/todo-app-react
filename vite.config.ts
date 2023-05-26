@@ -40,7 +40,7 @@ export default defineConfig({
       },
       registerType: "autoUpdate",
       workbox: {
-        globPatterns: ["**/*"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
       },
       includeAssets: ["**/*"],
     }),
